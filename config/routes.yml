@@ -1,1 +1,19 @@
-<?php
+show_schedule_route:
+  path: /
+  controller: App\Controller\ScheduleController::show
+  methods: GET
+
+#create_schedule_route:
+#  path: /
+#  controller: App\Controller\ScheduleController::create
+#  methods: POST
+#
+#show_user_route:
+#  path: /
+#  controller: App\Controller\UserController::show
+#  methods: GET
+#
+#create_user_route:
+#  path: /
+#  controller: App\Controller\UserController::create
+#  methods: POST
