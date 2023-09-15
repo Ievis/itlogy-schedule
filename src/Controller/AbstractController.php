@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Resource\JsonResource;
 use App\View\View;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Validation;
@@ -15,12 +16,10 @@ class AbstractController
 
     public function __construct()
     {
-//        $this->em = require __DIR__ . '/../../config/bootstrap.php';
-//        $this->validator = Validation::createValidatorBuilder()
-//            ->addYamlMapping(__DIR__ . '/../../config/Validatior/validation.yml')
-//            ->getValidator();
+        $this->em = require __DIR__ . '/../../config/bootstrap.php';
+        $this->validator = Validation::createValidatorBuilder()
+            ->addYamlMapping(__DIR__ . '/../../config/Validatior/validation.yml')
+            ->getValidator();
         $this->view = new View();
     }
-
-
 }

@@ -8,11 +8,6 @@ class ScheduleController extends AbstractController
 {
     public function show()
     {
-//        return new ScheduleResource();
-
-        return $this->view->render('main', [
-            'a' => 'I am a',
-            'b' => 'I am b'
-        ]);
+        return new ScheduleResource();
     }
 }

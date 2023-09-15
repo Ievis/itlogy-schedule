@@ -3,12 +3,13 @@
 namespace App\Service;
 
 use App\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ControllerInfo
 {
     public AbstractController $controller;
     public string $method;
-    public array $vars;
+    public array $parameters;
 
     public function __construct(array $route_parameters)
     {
@@ -17,11 +18,10 @@ class ControllerInfo
         $this->controller = new $controller_info[0];
         $this->method = $controller_info[1];
 
-        $this->vars = array_diff($route_parameters, [
+        $this->parameters = array_diff($route_parameters, [
             '_route' => $route_parameters['_route'],
             '_controller' => $route_parameters['_controller']
         ]);
-
     }
 
     public function getController()
@@ -34,8 +34,8 @@ class ControllerInfo
         return $this->method;
     }
 
-    public function getVars()
+    public function getParameters()
     {
-        return $this->vars;
+        return $this->parameters;
     }
 }
