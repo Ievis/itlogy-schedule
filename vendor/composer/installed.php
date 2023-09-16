@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '3af9bc7cc197ecc569c8125ef743c037c8646618',
+        'reference' => '50dd44974fa02199bda3a1cb815d22f7f5b0211c',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '3af9bc7cc197ecc569c8125ef743c037c8646618',
+            'reference' => '50dd44974fa02199bda3a1cb815d22f7f5b0211c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -237,6 +237,15 @@
             'install_path' => __DIR__ . '/../symfony/deprecation-contracts',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'symfony/error-handler' => array(
+            'pretty_version' => 'v6.3.2',
+            'version' => '6.3.2.0',
+            'reference' => '85fd65ed295c4078367c784e8a5a6cee30348b7a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/error-handler',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'symfony/filesystem' => array(
             'pretty_version' => 'v6.3.1',

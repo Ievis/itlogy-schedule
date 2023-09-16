@@ -1,0 +1,4 @@
+entity_managers:
+  App\Entity\Repository\UserRepository: User
+  App\Entity\Repository\CourseRepository: Course
+  App\Entity\Repository\ScheduleRepository: Schedule

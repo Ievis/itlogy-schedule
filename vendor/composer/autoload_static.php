@@ -15,8 +15,8 @@ class ComposerStaticInit55396192de12b6738523d94b45239217
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '0e423a14e27410a071e5d815d3ffc856' => __DIR__ . '/..' . '/larapack/dd/src/helper.php',
     );
 
@@ -41,6 +41,7 @@ class ComposerStaticInit55396192de12b6738523d94b45239217
             'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\ErrorHandler\\' => 31,
             'Symfony\\Component\\DependencyInjection\\' => 38,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
@@ -143,6 +144,10 @@ class ComposerStaticInit55396192de12b6738523d94b45239217
         'Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
+        ),
+        'Symfony\\Component\\ErrorHandler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/error-handler',
         ),
         'Symfony\\Component\\DependencyInjection\\' => 
         array (

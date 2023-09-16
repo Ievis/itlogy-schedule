@@ -14,12 +14,10 @@ class AbstractController
     protected ValidatorInterface $validator;
     protected View $view;
 
-    public function __construct()
+    public function __construct(EntityManager $em, ValidatorInterface $validator, View $view)
     {
-        $this->em = require __DIR__ . '/../../config/bootstrap.php';
-        $this->validator = Validation::createValidatorBuilder()
-            ->addYamlMapping(__DIR__ . '/../../config/Validatior/validation.yml')
-            ->getValidator();
-        $this->view = new View();
+        $this->em = $em;
+        $this->validator = $validator;
+        $this->view = $view;
     }
 }

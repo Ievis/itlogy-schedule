@@ -1,6 +1,7 @@
 {
   "require-dev": {
-    "larapack/dd": "^1.1"
+    "larapack/dd": "^1.1",
+    "symfony/error-handler": "^6.3"
   },
   "require": {
     "symfony/http-foundation": "^6.3",

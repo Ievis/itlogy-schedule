@@ -8,7 +8,7 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 
 new Config();
-require __DIR__ . '/../config/bootstrap.php';
+require __DIR__ . '/../config/database.php';
 ConsoleRunner::run(
     new SingleManagerProvider($entityManager)
 );

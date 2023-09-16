@@ -2,26 +2,28 @@
 
 namespace App;
 
+use App\Controller\AbstractController;
 use App\Resource\JsonResource;
 use App\Service\ControllerInfo;
-use Symfony\Component\Config\Definition\Configuration;
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\Config\FileLocator;
+use App\View\View;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class Application
 {
+    public ContainerBuilder $container_builder;
     public Request $request;
     public RouteCollection $routes;
     public ControllerInfo $controller_info;
@@ -32,10 +34,15 @@ class Application
     public function __construct(Request $request)
     {
         $this->setConfig();
-
         $this->setRequest($request);
+        $this->loadContainer();
         $this->loadRoutes();
         $this->getControllerInfo();
+    }
+
+    private function loadContainer()
+    {
+        $this->container_builder = ServiceProvider::loadFromConfig(new ContainerBuilder(), $this->request);
     }
 
     private function setConfig()
@@ -50,16 +57,12 @@ class Application
 
     private function loadRoutes()
     {
-        $file_locator = new FileLocator('../config');
-        $loader = new YamlFileLoader($file_locator);
-
-        $this->routes = $loader->load('routes.yml');
+        $this->routes = $this->container_builder->get(RouteCollection::class);
     }
 
     private function getControllerInfo()
     {
-        $context = new RequestContext();
-        $context->fromRequest($this->request);
+        $context = $this->container_builder->get(RequestContext::class);
 
         $matcher = new UrlMatcher($this->routes, $context);
         try {
@@ -71,6 +74,7 @@ class Application
 
         $route_parameters = $matcher->match($context->getPathInfo());
         $this->controller_info = new ControllerInfo($route_parameters);
+        $this->controller_info->setReflectionParameters($this->container_builder);
     }
 
     public function handle(): Response
@@ -78,23 +82,51 @@ class Application
         if ($this->hasResponse()) {
             return $this->response;
         }
-        $controller = $this->controller_info->getController();
-        $method = $this->controller_info->getMethod();
-        $parameters = $this->controller_info->getParameters();
-
-        $container_builder = new ContainerBuilder();
-        $definition = new Definition($controller::class);
-        $definition->addMethodCall($method, $parameters, true);
-        $container_builder->setDefinition($controller::class, $definition);
+        $this->registerControllerDefinition();
 
         try {
-            $this->content = $container_builder->get($controller::class);
+            $this->content = $this->container_builder->get($this->controller_info->getController());
         } catch (ValidationFailedException) {
             $this->response = new Response('Validation errors');
             return $this->response;
         }
 
         return new Response();
+    }
+
+    private function registerControllerDefinition()
+    {
+        $controller = $this->controller_info->getController();
+        $method = $this->controller_info->getMethod();
+        $parameters = $this->controller_info->getParameters();
+        $reflection_parameters = $this->controller_info->getReflectionParameters();
+
+        $definition = new Definition($controller, [
+            'em' => $this->container_builder->get(EntityManager::class),
+            'validator' => $this->container_builder->get(Validation::class),
+            'view' => $this->container_builder->get(View::class)
+        ]);
+        $this->container_builder->setDefinition($controller, $definition);
+
+        $this->expects(Request::class, $reflection_parameters, $parameters);
+        $this->expects(EntityRepository::class, $reflection_parameters, $parameters);
+
+        $definition->addMethodCall($method, $parameters, true);
+        $this->container_builder->setDefinition($controller, $definition);
+
+    }
+
+    private function expects(string $class, array $reflection_parameters, array &$parameters)
+    {
+        foreach ($reflection_parameters as $reflection_parameter) {
+            $parameter_class = $reflection_parameter->getType()->getName();
+            $parameter_class = $this->container_builder->get($parameter_class);
+            $requested_class = $this->container_builder->get($class);
+
+            if ($parameter_class instanceof $requested_class) {
+                $parameters[$reflection_parameter->getName()] = $parameter_class;
+            }
+        }
     }
 
     public function terminate(Request $request, Response $response)
