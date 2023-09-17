@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -28,7 +29,7 @@ class Application
     public ControllerInfo $controller_info;
     public null|Response $response = null;
     public ResponseHeaderBag $headers;
-    public string|JsonResource $content;
+    public View|JsonResource $content;
 
     public function __construct(Request $request)
     {
@@ -65,7 +66,11 @@ class Application
         } catch (ResourceNotFoundException) {
             $this->response = new Response('Not found!');
             return;
+        } catch (MethodNotAllowedException) {
+            $this->response = new Response('Method not allowed!');
+            return;
         }
+
 
         $route_parameters = $matcher->match($context->getPathInfo());
         $this->controller_info = new ControllerInfo($route_parameters);
@@ -94,12 +99,10 @@ class Application
         $controller = $this->controller_info->getController();
         $method = $this->controller_info->getMethod();
         $parameters = $this->controller_info->getParameters();
-        $reflection_parameters = $this->controller_info->getReflectionParameters();
 
         $definition = new Definition($controller, [
             'em' => $this->container->get(EntityManager::class),
             'validator' => $this->container->get(RecursiveValidator::class),
-            'view' => $this->container->get(View::class)
         ]);
         $this->container->setDefinition($controller, $definition);
         $this->provideControllerServices($parameters);
@@ -119,7 +122,7 @@ class Application
         }
     }
 
-    public function terminate(Request $request, Response $response)
+    public function terminate(Response $response)
     {
         if ($this->hasResponse()) {
             $this->response->send();
@@ -145,7 +148,7 @@ class Application
     {
         return $this->expectsJson()
             ? $this->content->getJson()
-            : $this->content;
+            : $this->content->getHtml();
     }
 
     public function expectsJson()

@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Console\Commands\CourseFixtureCommand;
+use App\Console\Commands\ScheduleFixtureCommand;
+use App\Console\Commands\UserFixtureCommand;
+use Symfony\Component\Console\Application;
+
+$app = new Application();
+$app->add(new UserFixtureCommand());
+$app->add(new CourseFixtureCommand());
+$app->add(new ScheduleFixtureCommand());
+$app->run();

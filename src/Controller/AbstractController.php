@@ -12,12 +12,10 @@ class AbstractController
 {
     protected EntityManager $em;
     protected ValidatorInterface $validator;
-    protected View $view;
 
-    public function __construct(EntityManager $em, ValidatorInterface $validator, View $view)
+    public function __construct(EntityManager $em, ValidatorInterface $validator)
     {
         $this->em = $em;
         $this->validator = $validator;
-        $this->view = $view;
     }
 }

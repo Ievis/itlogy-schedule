@@ -1,7 +1,10 @@
 {
   "require-dev": {
     "larapack/dd": "^1.1",
-    "symfony/error-handler": "^6.3"
+    "symfony/error-handler": "^6.3",
+    "doctrine/data-fixtures": "^1.6",
+    "doctrine/doctrine-fixtures-bundle": "^3.4",
+    "fakerphp/faker": "^1.23"
   },
   "require": {
     "symfony/http-foundation": "^6.3",

@@ -38,6 +38,7 @@ class User extends Entity
     {
         $this->schedules = new ArrayCollection();
 
+        $this->setId($data['id'] ?? null);
         $this->setEmail($data['email']);
         $this->setFirstName($data['first_name']);
         $this->setLastName($data['last_name']);

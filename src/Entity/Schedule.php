@@ -13,7 +13,7 @@ class Schedule extends Entity
     #[ORM\GeneratedValue]
     private int|null $id = null;
     #[ORM\Column(type: 'datetime')]
-    private string $will_at;
+    private \DateTimeInterface $will_at;
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'schedules')]
     #[ORM\JoinColumn(name: 'teacher_id', referencedColumnName: 'id')]
     private User|null $teacher = null;
@@ -21,11 +21,13 @@ class Schedule extends Entity
     #[ORM\JoinColumn(name: 'student_id', referencedColumnName: 'id')]
     private User|null $student = null;
 
-    public function __construct(array $data)
+    public function __construct(null|array $data = null)
     {
-        $this->setStudent($data['student']);
-        $this->setTeacher($data['teacher']);
-        $this->setWillAt($data['will_at']);
+        if ($data) {
+            $this->setStudent($data['student']);
+            $this->setTeacher($data['teacher']);
+            $this->setWillAt($data['will_at']);
+        }
     }
 
     public function getId(): ?int
@@ -38,12 +40,12 @@ class Schedule extends Entity
         $this->id = $id;
     }
 
-    public function getWillAt(): string
+    public function getWillAt(): \DateTimeInterface
     {
         return $this->will_at;
     }
 
-    public function setWillAt(string $will_at): void
+    public function setWillAt(\DateTimeInterface $will_at): void
     {
         $this->will_at = $will_at;
     }

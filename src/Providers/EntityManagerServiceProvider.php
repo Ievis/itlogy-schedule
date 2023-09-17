@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 class EntityManagerServiceProvider extends ServiceProvider implements ProviderInterface
 {
-    public array $repositories = [
+    public static array $repositories = [
         UserRepository::class => User::class,
         CourseRepository::class => Course::class,
         ScheduleRepository::class => Schedule::class,
@@ -33,9 +33,18 @@ class EntityManagerServiceProvider extends ServiceProvider implements ProviderIn
 
     private function collectEntityManagers(EntityManager $entity_manager)
     {
-        foreach ($this->repositories as $repository => $entity) {
+        foreach (self::$repositories as $repository => $entity) {
             $this->collect([new $repository($entity_manager, new ClassMetadata($entity))]);
         }
+    }
 
+    public static function getEntityManager(): EntityManager
+    {
+        return require __DIR__ . '/../../config/database.php';
+    }
+
+    public static function getRepositoryManager(EntityManager $em, string $repo): EntityRepository
+    {
+        return new $repo($em, new ClassMetadata(self::$repositories[$repo]));
     }
 }

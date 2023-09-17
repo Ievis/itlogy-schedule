@@ -11,6 +11,6 @@ $request = Request::createFromGlobals();
 $app = new Application($request);
 $response = $app->handle();
 
-$app->terminate($request, $response);
+$app->terminate($response);
 
 
