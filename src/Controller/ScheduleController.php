@@ -28,7 +28,7 @@ class ScheduleController extends AbstractController
             ->setParameter(1, 'student')
             ->getQuery()
             ->getResult();
-        dd($request, $repository);
+        dd($request, $repository->findAll());
         $schedule = new Schedule([
 
         ]);
