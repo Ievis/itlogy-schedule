@@ -27,8 +27,8 @@ class ScheduleController extends AbstractController
     {
         $validation = new ScheduleValidationService([
             'will_at' => $request->request->get('will_at'),
-            'student' => $user_repository->find($request->request->get('student_id')),
-            'teacher' => $user_repository->find($request->request->get('teacher_id')),
+            'student' => $user_repository->find($request->request->get('student_id') ?? 0),
+            'teacher' => $user_repository->find($request->request->get('teacher_id') ?? 0),
         ], $schedule_repository);
         try {
             $data = $validation->validated();
