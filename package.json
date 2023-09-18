@@ -1,5 +1,11 @@
 {
   "devDependencies": {
     "tailwindcss": "^3.3.3"
+  },
+  "dependencies": {
+    "alpinejs": "^3.13.0",
+    "flatpickr": "^4.6.13",
+    "flowbite": "^1.8.1",
+    "flowbite-datepicker": "^1.2.2"
   }
 }

@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -28,8 +29,7 @@ class Application
     public Request $request;
     public ControllerInfo $controller_info;
     public null|Response $response = null;
-    public ResponseHeaderBag $headers;
-    public View|JsonResource $content;
+    public RedirectResponse|View|JsonResource $content;
 
     public function __construct(Request $request)
     {
@@ -71,7 +71,6 @@ class Application
             return;
         }
 
-
         $route_parameters = $matcher->match($context->getPathInfo());
         $this->controller_info = new ControllerInfo($route_parameters);
         $this->controller_info->setReflectionParameters($this->container);
@@ -89,6 +88,11 @@ class Application
         } catch (ValidationFailedException) {
             $this->response = new Response('Validation errors');
             return $this->response;
+        }
+        if ($this->content instanceof RedirectResponse) {
+            $this->response = $this->content;
+
+            return $this->content;
         }
 
         return new Response();

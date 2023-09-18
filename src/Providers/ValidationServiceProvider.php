@@ -9,7 +9,7 @@ class ValidationServiceProvider extends ServiceProvider implements ProviderInter
     public function process(): array
     {
         return [Validation::createValidatorBuilder()
-            ->addYamlMapping(__DIR__ . '/../config/Validatior/validation.yml')
+            ->addYamlMapping(__DIR__ . '/../../config/Validator/validation.yml')
             ->getValidator()];
     }
 }

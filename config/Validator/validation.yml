@@ -1,0 +1,8 @@
+App\Entity\Schedule:
+  properties:
+    student:
+      - NotBlank: ~
+    teacher:
+      - NotBlank: ~
+    will_at:
+      - NotBlank: ~

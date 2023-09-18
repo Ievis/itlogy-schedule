@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class Entity
 {
-    protected function validated(ValidatorInterface $validator)
+    public function validated(ValidatorInterface $validator)
     {
         $errors = $validator->validate($this);
         if ($errors->count()) {

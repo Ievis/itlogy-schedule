@@ -3,8 +3,12 @@ show_schedules_route:
   controller: App\Controller\MainController::index
   methods: GET
 
-show_schedule_route:
-  path: /schedules
+get_create_schedule_route:
+  path: /schedules/create
+  controller: App\Controller\ScheduleController::show
+  methods: GET
+
+post_create_schedule_route:
+  path: /schedules/create
   controller: App\Controller\ScheduleController::create
   methods: POST
-
