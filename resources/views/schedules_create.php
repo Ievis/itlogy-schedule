@@ -10,11 +10,6 @@
 </head>
 <body>
 
-<link rel="stylesheet" type="text/css" href="/jquery.datetimepicker.css"
-/ >
-<script src="/jquery.js"></script>
-<script src="/build/jquery.datetimepicker.full.min.js"></script>
-
 <nav class="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" class="flex items-center">
@@ -37,7 +32,7 @@
         </div>
     <? endif; ?>
 
-    <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
+    <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Student</label>
     <select name="student_id" id="countries"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <? foreach ($students as $student): ?>
@@ -46,8 +41,7 @@
             </option>
         <? endforeach; ?>
     </select>
-    <label for="countries" class="mt-4 block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an
-        option</label>
+    <label for="countries" class="mt-4 block mb-2 text-sm font-medium text-gray-900 dark:text-white">Teacher</label>
     <select name="teacher_id" id="countries"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <? foreach ($teachers as $teacher): ?>
@@ -72,7 +66,7 @@
                        id="datetime"
                        data-input
                        placeholder="Select.."
-                       class="block w-full px-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-l-md shadow-sm"
+                       class="block w-full px-2 focus:outline-none border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-l-md shadow-sm"
 
                 >
 

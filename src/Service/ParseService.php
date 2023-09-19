@@ -22,6 +22,7 @@ class ParseService
         $ru_date = str_replace(self::$en_months, self::$ru_months, $date);
         $ru_date = str_replace('nd', '', $ru_date);
         $ru_date = str_replace('st', '', $ru_date);
+        $ru_date = str_replace('rd', '', $ru_date);
         return str_replace('th', '', $ru_date);
     }
 
