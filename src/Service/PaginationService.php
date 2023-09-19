@@ -16,7 +16,7 @@ class PaginationService
     public function __construct(EntityRepository $repository, $page, $per_page)
     {
         $this->repository = $repository;
-        $this->page =  max($page, 1);;
+        $this->page = max($page, 1);;
         $this->per_page = $per_page;
     }
 
@@ -24,7 +24,9 @@ class PaginationService
     {
         $this->entities = $this->repository->paginateWithUsers($this->page);
         $count = $this->repository->countAll();
-        $last = round($count / 10) + 1;
+        $last = $count % $this->per_page == 0
+            ? floor($count / 10)
+            : floor($count / 10) + 1;
         $next = $this->page + 1;
         $prev = $this->page - 1;
         if ($this->page <= 1) {
