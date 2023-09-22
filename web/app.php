@@ -3,8 +3,8 @@
 require '../vendor/autoload.php';
 
 use App\Application;
+use App\Components\Http\Request\Request;
 use Symfony\Component\ErrorHandler\Debug;
-use Symfony\Component\HttpFoundation\Request;
 
 session_start();
 Debug::enable();

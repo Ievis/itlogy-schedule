@@ -2,16 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Repository\ScheduleRepository;
 use App\Service\MainService;
 use App\Service\PaginationService;
 use App\View\View;
-use Symfony\Component\HttpFoundation\Request;
+use PDO;
 
 class MainController extends AbstractController
 {
-    public function index(Request $request, ScheduleRepository $repository)
+    public function index(PDO $pdo)
     {
+        dd($pdo);
         $page = (int)$request->query->get('page') ?? 1;
         $pagination = new PaginationService($repository, $page, 10);
         $pagination->paginate();

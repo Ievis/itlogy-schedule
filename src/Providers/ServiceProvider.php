@@ -2,28 +2,17 @@
 
 namespace App\Providers;
 
-use App\Entity\Entity;
-use App\View\View;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Yaml\Yaml;
+use App\Components\Container\Container;
+use App\Components\Http\Request\Request;
 
 class ServiceProvider implements ProviderInterface
 {
     protected Request $request;
     public array $services = [];
     private array $providers;
-    private ContainerBuilder $container;
+    private Container $container;
 
-    public function __construct(ContainerBuilder $container, Request $request)
+    public function __construct(Container $container, Request $request)
     {
         $this->request = $request;
         $this->providers = require __DIR__ . '/../../config/providers.php';

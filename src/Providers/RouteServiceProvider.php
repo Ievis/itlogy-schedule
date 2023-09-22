@@ -2,21 +2,16 @@
 
 namespace App\Providers;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
+use App\Components\Route\Route;
 
 class RouteServiceProvider extends ServiceProvider implements ProviderInterface
 {
     public function process(): array
     {
-        $loader = new YamlFileLoader(new FileLocator(__DIR__ . '/../../config'));
-        $routes = $loader->load('routes.yml');
-        $context = (new RequestContext())->fromRequest($this->request);
-        $matcher = new UrlMatcher($routes, $context);
+        $routes = require __DIR__ . '/../../config/routes.php';
+        $route = new Route($routes, $this->request);
 
-        return [$matcher, $context];
+        return [$route];
     }
 
 }

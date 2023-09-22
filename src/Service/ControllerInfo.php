@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Components\Container\Container;
 use App\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -16,14 +17,10 @@ class ControllerInfo
     public function __construct(array $route_parameters)
     {
         $controller_info = explode('::', $route_parameters['_controller']);
-
         $this->controller = $controller_info[0];
         $this->method = $controller_info[1];
 
-        $this->parameters = array_diff($route_parameters, [
-            '_route' => $route_parameters['_route'],
-            '_controller' => $route_parameters['_controller']
-        ]);
+        $this->parameters = $route_parameters['_parameters'];
     }
 
     public function getController()
@@ -41,9 +38,9 @@ class ControllerInfo
         return $this->parameters;
     }
 
-    public function setReflectionParameters(ContainerBuilder $container_builder)
+    public function setReflectionParameters(Container $container)
     {
-        $this->reflection_parameters = $container_builder
+        $this->reflection_parameters = $container
             ->getReflectionClass($this->controller)
             ->getMethod($this->method)
             ->getParameters();

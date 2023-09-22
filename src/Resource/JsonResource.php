@@ -6,10 +6,10 @@ use App\Entity\Entity;
 
 class JsonResource
 {
-    protected null|Entity $entity;
+    public Entity $entity;
     public array $data;
 
-    public function __construct(null|Entity $entity = null)
+    public function __construct(Entity $entity)
     {
         $this->entity = $entity;
     }

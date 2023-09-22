@@ -2,30 +2,23 @@
 
 namespace App;
 
+use App\Components\Container\Container;
+use App\Components\Container\Definition;
+use App\Components\Http\Request\Request;
+use App\Components\Http\Response\RedirectResponse;
+use App\Components\Http\Response\Response;
+use App\Components\Route\Route;
 use App\Providers\ServiceProvider;
 use App\Resource\JsonResource;
 use App\Service\ControllerInfo;
 use App\View\View;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
+use App\Components\Http\Exception\MethodNotAllowedHttpException;
+use App\Components\Http\Exception\NotFoundHttpException;
+use PDO;
 
 class Application
 {
-    public ContainerBuilder $container;
+    public Container $container;
     public Request $request;
     public ControllerInfo $controller_info;
     public null|Response $response = null;
@@ -41,7 +34,7 @@ class Application
 
     private function loadContainer()
     {
-        $provider = new ServiceProvider(new ContainerBuilder(), $this->request);
+        $provider = new ServiceProvider(new Container(), $this->request);
         $provider->process();
         $this->container = $provider->getContainer();
     }
@@ -58,20 +51,18 @@ class Application
 
     private function getControllerInfo()
     {
-        $context = $this->container->get(RequestContext::class);
-        $matcher = $this->container->get(UrlMatcher::class);
+        $route = $this->container->get(Route::class);
 
         try {
-            $matcher->match($context->getPathInfo());
-        } catch (ResourceNotFoundException) {
-            $this->response = new Response('Not found!');
+            $route_parameters = $route->match();
+        } catch (NotFoundHttpException) {
+            $this->response = new Response('Not found!', 404);
             return;
-        } catch (MethodNotAllowedException) {
-            $this->response = new Response('Method not allowed!');
+        } catch (MethodNotAllowedHttpException) {
+            $this->response = new Response('Method not allowed!', 405);
             return;
         }
 
-        $route_parameters = $matcher->match($context->getPathInfo());
         $this->controller_info = new ControllerInfo($route_parameters);
         $this->controller_info->setReflectionParameters($this->container);
     }
@@ -82,17 +73,12 @@ class Application
             return $this->response;
         }
         $this->registerControllerDefinition();
+        $this->content = $this->container->get($this->controller_info->getController());
 
-        try {
-            $this->content = $this->container->get($this->controller_info->getController());
-        } catch (ValidationFailedException) {
-            $this->response = new Response('Validation errors');
-            return $this->response;
-        }
         if ($this->content instanceof RedirectResponse) {
             $this->response = $this->content;
 
-            return $this->content;
+            return $this->response;
         }
 
         return new Response();
@@ -105,10 +91,8 @@ class Application
         $parameters = $this->controller_info->getParameters();
 
         $definition = new Definition($controller, [
-            'em' => $this->container->get(EntityManager::class),
-            'validator' => $this->container->get(RecursiveValidator::class),
+            'pdo' => $this->container->get(PDO::class),
         ]);
-        $this->container->setDefinition($controller, $definition);
         $this->provideControllerServices($parameters);
 
         $definition->addMethodCall($method, $parameters, true);
@@ -119,9 +103,12 @@ class Application
     {
         $reflection_parameters = $this->controller_info->getReflectionParameters();
         foreach ($reflection_parameters as $reflection_parameter) {
-            $reflection_parameter = $reflection_parameter->getType()->getName();
-            if ($this->container->has($reflection_parameter)) {
-                $parameters[] = $this->container->get($reflection_parameter);
+            if (empty($reflection_parameter->getType())) {
+                continue;
+            }
+            $reflection_parameter_name = $reflection_parameter->getType()->getName();
+            if ($this->container->has($reflection_parameter_name)) {
+                $parameters[$reflection_parameter->getName()] = $this->container->get($reflection_parameter_name);
             }
         }
     }
