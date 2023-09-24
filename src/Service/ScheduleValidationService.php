@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
+use App\Components\Http\Response\RedirectResponse;
 use App\Entity\Repository\ScheduleRepository;
 use App\Exception\ValidationException;
 use DateTime;
 use DateTimeZone;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class ScheduleValidationService
 {
@@ -76,7 +76,11 @@ class ScheduleValidationService
 
     private function validateSchedulePersistance()
     {
-        $schedule = $this->repository->findBy($this->data);
+        $schedule = $this->repository->findBy([
+            'will_at' => ((array)$this->data['will_at'])['date'],
+            'student_id' => $this->data['student']['user_id'],
+            'teacher_id' => $this->data['teacher']['user_id'],
+        ]);
         if ($schedule) {
             $_SESSION['message'] = 'На это время уже запланировано занятие';
             $this->setFailed();

@@ -2,35 +2,23 @@
 
 namespace App\Entity\Repository;
 
-use App\Entity\Schedule;
-use App\Entity\User;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\Expr\Join;
+use App\Components\Db\Repository;
 
-class UserRepository extends EntityRepository
+class UserRepository extends Repository
 {
     public function getByRole(string $role)
     {
-        return $this->findBy([
-            'role' => $role
-        ]);
+        return $this->builder->table('users', 'u')
+            ->select()
+            ->where('role', '=', $role)
+            ->get();
     }
 
-    public function getSchedulesWithUsers()
+    public function find(int $id)
     {
-        $users = $this->_em->createQueryBuilder()
-            ->select('u')
-            ->from(User::class, 'u')
-            ->getQuery()
-            ->getResult();
-
-        return $this->_em->createQueryBuilder()
-            ->select('s')
-            ->from(Schedule::class, 's')
-            ->where('IDENTITY(s.student) IN (?1)')
-            ->orWhere('IDENTITY(s.teacher) IN (?1)')
-            ->setParameter(1, array_keys($users))
-            ->getQuery()
-            ->getResult();
+        return $this->builder->table('users')
+            ->select()
+            ->where('user_id', '=', $id)
+            ->get()[0];
     }
 }

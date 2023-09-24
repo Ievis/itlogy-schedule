@@ -34,9 +34,7 @@ class Application
 
     private function loadContainer()
     {
-        $provider = new ServiceProvider(new Container(), $this->request);
-        $provider->process();
-        $this->container = $provider->getContainer();
+        $this->container = ServiceProvider::loadContainer($this->request);
     }
 
     private function setConfig()
@@ -64,7 +62,6 @@ class Application
         }
 
         $this->controller_info = new ControllerInfo($route_parameters);
-        $this->controller_info->setReflectionParameters($this->container);
     }
 
     public function handle(): Response
@@ -90,27 +87,9 @@ class Application
         $method = $this->controller_info->getMethod();
         $parameters = $this->controller_info->getParameters();
 
-        $definition = new Definition($controller, [
-            'pdo' => $this->container->get(PDO::class),
-        ]);
-        $this->provideControllerServices($parameters);
-
-        $definition->addMethodCall($method, $parameters, true);
+        $definition = new Definition($controller);
+        $definition->addMethodCall($method, $parameters);
         $this->container->setDefinition($controller, $definition);
-    }
-
-    private function provideControllerServices(array &$parameters)
-    {
-        $reflection_parameters = $this->controller_info->getReflectionParameters();
-        foreach ($reflection_parameters as $reflection_parameter) {
-            if (empty($reflection_parameter->getType())) {
-                continue;
-            }
-            $reflection_parameter_name = $reflection_parameter->getType()->getName();
-            if ($this->container->has($reflection_parameter_name)) {
-                $parameters[$reflection_parameter->getName()] = $this->container->get($reflection_parameter_name);
-            }
-        }
     }
 
     public function terminate(Response $response)
@@ -119,6 +98,7 @@ class Application
             $this->response->send();
             return;
         }
+
         $response->headers = $this->getHeaders();
         $response->setContent($this->getContent());
         $response->setStatusCode(200);
@@ -132,11 +112,12 @@ class Application
             ? 'application/json'
             : 'text/html';
 
-        return new ResponseHeaderBag($headers);
+        return $headers;
     }
 
     public function getContent()
     {
+        ob_start();
         return $this->expectsJson()
             ? $this->content->getJson()
             : $this->content->getHtml();

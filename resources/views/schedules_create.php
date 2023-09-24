@@ -36,8 +36,8 @@
     <select name="student_id" id="countries"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <? foreach ($students as $student): ?>
-            <option value="<?= $student->getId() ?>">
-                <?= $student->getFirstName() ?>
+            <option value="<?= $student['user_id'] ?>">
+                <?= $student['first_name'] ?>
             </option>
         <? endforeach; ?>
     </select>
@@ -45,8 +45,8 @@
     <select name="teacher_id" id="countries"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <? foreach ($teachers as $teacher): ?>
-            <option value="<?= $teacher->getId() ?>">
-                <?= $teacher->getFirstName() ?>
+            <option value="<?= $teacher['user_id'] ?>">
+                <?= $teacher['first_name'] ?>
             </option>
         <? endforeach; ?>
         </option>

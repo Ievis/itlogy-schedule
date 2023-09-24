@@ -27,9 +27,24 @@ class Definition
         ];
     }
 
+    public function appendParameters(array $parameters)
+    {
+        $this->parameters = array_merge($this->parameters, $parameters);
+    }
+
+    public function appendMethodCallParameters(array $parameters)
+    {
+        if (!empty($this->call)) {
+            $this->call['parameters'] = array_merge($this->call['parameters'], $parameters);
+        }
+    }
+
     public function getInstance()
     {
         $reflection_class = new ReflectionClass($this->getServiceName());
+        if(!$reflection_class->hasMethod('__construct')) {
+            return $reflection_class->newInstance();
+        }
         $construct_info = $reflection_class->getMethod('__construct');
         $construct_parameters = $construct_info->getParameters();
         $parameters = $this->arrangeParameters($this->getParameters(), $construct_parameters);
@@ -39,6 +54,9 @@ class Definition
 
     public function getMethodExecution(object $instance)
     {
+        if (empty($this->call)) {
+            return $instance;
+        }
         $reflection_class = new ReflectionClass($this->getServiceName());
         $method_info = $reflection_class->getMethod($this->getMethodCall()['method']);
         $method_parameters = $method_info->getParameters();

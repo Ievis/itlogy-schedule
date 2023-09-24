@@ -34,5 +34,6 @@ class Response
         echo $this->content;
 
         fastcgi_finish_request();
+        ob_end_flush();
     }
 }

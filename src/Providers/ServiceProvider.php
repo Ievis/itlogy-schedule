@@ -7,22 +7,37 @@ use App\Components\Http\Request\Request;
 
 class ServiceProvider implements ProviderInterface
 {
-    protected Request $request;
+    protected null|Request $request;
     public array $services = [];
     private array $providers;
-    private Container $container;
+    public Container $container;
 
-    public function __construct(Container $container, Request $request)
+    public function __construct(Container $container)
     {
-        $this->request = $request;
+        $this->request = $container->get(Request::class);
         $this->providers = require __DIR__ . '/../../config/providers.php';
         $this->container = $container;
+    }
+
+    public static function loadContainer(null|Request $request = null): Container
+    {
+        $container = new Container();
+        if ($request) {
+            $container->set(Request::class, $request);
+        }
+        $provider = new self($container);
+        $provider->process();
+
+        return $provider->getContainer();
     }
 
     public function process(): array
     {
         foreach ($this->providers as $provider) {
-            $provider = new $provider($this->container, $this->request);
+            $provider = new $provider($this->container);
+            if (!$this->hasRequiredServices($provider)) {
+                continue;
+            }
             $this->services = array_merge($this->services, $provider->process());
         }
 
@@ -31,7 +46,7 @@ class ServiceProvider implements ProviderInterface
 
     public function getContainer()
     {
-        foreach($this->services as $service) {
+        foreach ($this->services as $service) {
             $this->container->set($service::class, $service);
         }
 
@@ -41,5 +56,21 @@ class ServiceProvider implements ProviderInterface
     public function collect(array $services)
     {
         $this->services = array_merge($this->services, $services);
+    }
+
+    public function requiredServices()
+    {
+        return [];
+    }
+
+    public function hasRequiredServices(ProviderInterface $provider)
+    {
+        foreach ($provider->requiredServices() as $service) {
+            if (!$this->container->has($service)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

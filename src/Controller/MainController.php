@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
+use App\Components\Http\Request\Request;
+use App\Entity\Repository\ScheduleRepository;
 use App\Service\MainService;
 use App\Service\PaginationService;
 use App\View\View;
-use PDO;
 
 class MainController extends AbstractController
 {
-    public function index(PDO $pdo)
+    public function index(Request $request, ScheduleRepository $repository)
     {
-        dd($pdo);
-        $page = (int)$request->query->get('page') ?? 1;
+        $page = (int)$request->get('page') ?? 1;
         $pagination = new PaginationService($repository, $page, 10);
         $pagination->paginate();
         $schedules = $pagination->getEntities();

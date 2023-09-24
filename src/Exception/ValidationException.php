@@ -2,8 +2,8 @@
 
 namespace App\Exception;
 
+use App\Components\Http\Response\Response;
 use Exception;
-use Symfony\Component\HttpFoundation\Response;
 
 class ValidationException extends Exception
 {

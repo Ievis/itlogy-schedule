@@ -15,9 +15,9 @@ class ParseService
         $this->date = $date;
     }
 
-    public static function toRussian(\DateTimeInterface $schedule)
+    public static function toRussian(string $will_at)
     {
-        $date = date("F jS, Y", strtotime(((array)($schedule))['date']));
+        $date = date("F jS, Y", strtotime($will_at));
 
         $ru_date = str_replace(self::$en_months, self::$ru_months, $date);
         $ru_date = str_replace('nd', '', $ru_date);

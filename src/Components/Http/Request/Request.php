@@ -27,4 +27,14 @@ class Request
     {
         return $this->globals['SERVER']['REQUEST_METHOD'];
     }
+
+    public function get(string $key)
+    {
+        return $this->globals['GET'][$key] ?? null;
+    }
+
+    public function post(string $key)
+    {
+        return $this->globals['POST'][$key] ?? null;
+    }
 }

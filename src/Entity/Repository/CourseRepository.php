@@ -2,9 +2,12 @@
 
 namespace App\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Components\Db\Repository;
 
-class CourseRepository extends EntityRepository
+class CourseRepository extends Repository
 {
+    public function getAll()
+    {
 
+    }
 }

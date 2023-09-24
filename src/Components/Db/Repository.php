@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Components\Db;
 
-use App\Components\Db\QueryBuilder;
-
-class AbstractController
+class Repository
 {
     public QueryBuilder $builder;
 

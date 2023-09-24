@@ -8,7 +8,7 @@ return [
     ],
     'schedules_create' => [
         'path' => '/schedules/create',
-        'controller' => 'App\Controller\ScheduleController::index',
+        'controller' => 'App\Controller\ScheduleController::show',
         'method' => 'GET'
     ],
     'schedules_create_action' => [

@@ -36,11 +36,19 @@ class Route
         foreach ($this->routes as $route_name => $route) {
             $route = $this->explodeUri($route['path']);
             if ($this->matchExplodedUri($uri, $route)) {
-                $this->matched_route[$route_name] = $this->routes[$route_name];
+                if ($this->matched_route) {
+                    $this->matched_route[array_keys($this->matched_route)[0]] = $this->routes[$route_name];
+                } else {
+                    $this->matched_route[$route_name] = $this->routes[$route_name];
+                }
+                if ($this->method != $this->routes[$route_name]['method']) {
+                    continue;
+                }
 
                 return;
             }
         }
+
     }
 
     public function matchExplodedUri(array $uri, array $route)

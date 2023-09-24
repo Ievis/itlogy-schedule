@@ -2,5 +2,5 @@
 
 return [
     \App\Providers\RouteServiceProvider::class,
-    \App\Providers\PdoServiceProvider::class,
+    \App\Providers\DbServiceProvider::class,
 ];

@@ -2,18 +2,18 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityRepository;
+use App\Components\Db\Repository;
 
 class PaginationService
 {
-    private EntityRepository $repository;
+    private Repository $repository;
     private array $entities;
     private int $page;
     private int $per_page;
     private array $links;
     private array $urls;
 
-    public function __construct(EntityRepository $repository, $page, $per_page)
+    public function __construct(Repository $repository, $page, $per_page)
     {
         $this->repository = $repository;
         $this->page = max($page, 1);;

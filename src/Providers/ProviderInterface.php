@@ -5,4 +5,6 @@ namespace App\Providers;
 interface ProviderInterface
 {
     public function process(): array;
+
+    public function requiredServices();
 }
